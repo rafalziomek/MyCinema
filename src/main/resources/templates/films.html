@@ -1,0 +1,28 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <title>Films</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   
+  </head>
+
+  <body>
+    <table>
+      <tr>
+      	<th>Title</th>
+        <th>Duration</th>
+        <th>Description</th>
+      </tr>
+      <tr th:each="film : ${films}">
+      	<td th:text="${film.title}">1</td>
+        <td th:text="${film.duration}">Name</td>
+        <td th:text="${film.description}">City</td>
+      </tr>
+    </table>
+  	
+  </body>
+
+</html>
