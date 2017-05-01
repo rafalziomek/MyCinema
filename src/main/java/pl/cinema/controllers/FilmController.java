@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pl.cinema.model.Film;
 import pl.cinema.model.Projection;
+import pl.cinema.repositories.FilmRepository;
 import pl.cinema.services.FilmService;
 import pl.cinema.services.ProjectionService;
 
@@ -58,12 +59,25 @@ public class FilmController {
 		return "Succesfully added";
 	}
 	
-	@DeleteMapping("/delete/{id}")
+	@PostMapping("/delete/{id}")
 	@ResponseBody
 	public String deleteFilm(@PathVariable long id) {
 		filmService.deleteFilmById(id);
 		return "Succesfully deleted";
 	}
 	
+	@GetMapping("/edit/{id}")
+	public String getEditFilm(@PathVariable long id, Model model) {
+		Film filmToEdit = filmService.getFilmById(id);
+		model.addAttribute("film", filmToEdit);
+		return "editFilm";
+	}
 	
+	@PostMapping("/edit/{id}")
+	@ResponseBody
+	public String editFilm(@PathVariable long id, @ModelAttribute(name="film") Film film) {
+		film.setId(id);
+		filmService.addFilm(film);
+		return "Succesfully updated";
+	}
 }

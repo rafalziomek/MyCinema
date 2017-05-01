@@ -27,4 +27,14 @@ public class FilmService {
 	public void deleteFilmById(long id) {
 		filmRepository.delete(id);
 	}
+	
+	public long getLastRecordId() {
+		List<Film> films = this.getAll();
+		int size = films.size();
+		return films.get(size - 1).getId();
+	}
+	
+	public void clear() {
+		filmRepository.deleteAll();
+	}
 }

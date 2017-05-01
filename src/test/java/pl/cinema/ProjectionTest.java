@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,9 +33,16 @@ public class ProjectionTest {
 	private long idOfFirstFilm;
 	@Before
 	public void initialize() {
-		films = initializeFilms();
+		films = FilmInitializer.initializeFilms(filmService);
 		projections = initializeProjections(films);
 	}
+	
+	@After
+	public void delete() {
+		projectionService.clear();
+		filmService.clear();
+	}
+	
 	@Test
 	public void testProjection() {
 		List<Projection> projectionsOfFirstFilm = 
@@ -59,15 +67,5 @@ public class ProjectionTest {
 			
 		return projections;
 	}
-	private List<Film> initializeFilms() {
-		List<Film> films = new ArrayList<Film>();
-		for(int i = 1; i < 30; i++) {
-			Film film = new Film("Title " + i);
-			film.setDescription("Description " + i);
-			film.setDuration(i*2);
-			filmService.addFilm(film);
-			films.add(film);
-		}
-		return films;
-	}
+	
 }

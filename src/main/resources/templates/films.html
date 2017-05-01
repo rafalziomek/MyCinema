@@ -25,11 +25,21 @@
     		<input type="submit" value="Details" />
    			 </form>
         </td>
+        <td>
+        	<form th:action="@{/films/delete/__${film.id}__}" method="post">
+    		<input type="submit" value="delete" />
+   			 </form>
+        </td>
+        <td>
+        	<form th:action="@{/films/edit/__${film.id}__}" method="get">
+    		<input type="submit" value="edit" />
+   			 </form>
+        </td>
       </tr>
       
     </table>
     <form th:action="@{/films/add}" method="get">
-    	<input type="submit" value="add" />
+    	<input type="submit" value="Add" />
     </form>
   	
   </body>

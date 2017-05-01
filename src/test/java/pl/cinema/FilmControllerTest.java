@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,17 @@ public class FilmControllerTest {
 	
 	@Autowired
 	private ProjectionService projectionService;
+	
+	@Before
+	public void initialize() {
+		FilmInitializer.initializeFilms(filmService);
+	}
+	
+	@After
+	public void clear() {
+		filmService.clear();
+		projectionService.clear();
+	}
 	
 	@Test
 	public void testGetAll() throws Exception {
@@ -71,18 +84,29 @@ public class FilmControllerTest {
 	
 	@Test 
 	public void testAddFilm() throws Exception {
-		Film film = new Film();
-		film.setDescription("description");
-		film.setTitle("title");
+		Film film = new Film("title1");
+		film.setDescription("description1");
 		film.setDuration(20);
+		
+		long id = filmService.getLastRecordId();
+		film.setId(id++);
 		mockMvc
 			.perform(post("/films/add")
-			.param("title", "title")
+			.param("title", "title1")
 			.param("duration", "20")
-			.param("description", "description"))
+			.param("description", "description1"))
 			.andExpect(status().isOk());
-		boolean filmIsInDatabase = filmService.getAll().contains(film);
+		List<Film> films = filmService.getAll();
+ 		boolean filmIsInDatabase = filmService.getAll().contains(film);
 		assertTrue(filmIsInDatabase);
+		
+		film = filmService.getFilmById(id);
+		String expectedTitle = "title1";
+		String expectedDescription = "description1";
+		int expectedDuration = 20;
+		assertEquals(film.getDescription(), expectedDescription);
+		assertEquals(film.getDuration(), expectedDuration);
+		assertEquals(film.getTitle(), expectedTitle);
 	}
 	
 	@Test
@@ -91,13 +115,31 @@ public class FilmControllerTest {
 		Film filmToDelete = films.get(0);
 		long id = filmToDelete.getId();
 		mockMvc
-			.perform(delete("/films/delete/" + id))
+			.perform(post("/films/delete/" + id))
 			.andExpect(status().isOk());
 		films = filmService.getAll();
 		boolean filmsContainsFilmToDelete = films.contains(filmToDelete);
 		assertFalse(filmsContainsFilmToDelete);
 	}
 	
-	
+	@Test
+	public void testEditFilm() throws Exception {
+		List<Film> films = filmService.getAll();
+		Film filmToEdit = films.get(0);
+		long id = filmToEdit.getId();
+		mockMvc
+			.perform(post("/films/edit/" + id)
+			.param("title", "editTitle")
+			.param("duration", "22")
+			.param("description", "editDescription"))
+			.andExpect(status().isOk());
+		Film film = filmService.getFilmById(id);
+		String expectedTitle = "editTitle";
+		String expectedDescription = "editDescription";
+		int expectedDuration = 22;
+		assertEquals(film.getDescription(), expectedDescription);
+		assertEquals(film.getDuration(), expectedDuration);
+		assertEquals(film.getTitle(), expectedTitle);
+	}
 	
 }

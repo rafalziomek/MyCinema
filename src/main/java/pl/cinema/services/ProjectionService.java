@@ -27,7 +27,10 @@ public class ProjectionService {
 	public void saveProjection(Projection projection) {
 		projectionRepository.save(projection);
 	}
-
+	
+	public void clear() {
+		projectionRepository.deleteAll();
+	}
 	
 	
 }
