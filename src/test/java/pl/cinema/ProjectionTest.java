@@ -30,11 +30,11 @@ public class ProjectionTest {
 	
 	private List<Film> films;
 	private List<Projection> projections;
-	private long idOfFirstFilm;
+	
 	@Before
 	public void initialize() {
 		films = FilmInitializer.initializeFilms(filmService);
-		projections = initializeProjections(films);
+		projections = ProjectionInitializer.initializeProjections(films, filmService, projectionService);
 	}
 	
 	@After
@@ -51,21 +51,6 @@ public class ProjectionTest {
 		assertEquals(projectionsOfFirstFilm, projectionsToCheck);
 	}
 	
-	private List<Projection> initializeProjections(List<Film> films) {
-		List<Projection> projections = new ArrayList<Projection>();
-		long idOfFilm = 0;
-		for(int j = 0; j < films.size() / 2; j ++) {
-			idOfFilm = films.get(j).getId();
-			for(int i = 1; i < 10; i++) {
-				Projection projection = new Projection();
-				projection.setFilm(filmService.getFilmById(idOfFilm));
-				projection.setStartDate(LocalDateTime.now().plusDays(j).plusHours(i));
-				projectionService.saveProjection(projection);
-				projections.add(projection);
-			}
-		}
-			
-		return projections;
-	}
+	
 	
 }

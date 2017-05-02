@@ -1,0 +1,47 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <title>Films</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   
+  </head>
+
+  <body>
+    <table>
+      <tr>
+      	<th>Title</th>
+        <th>Duration</th>
+        <th>Description</th>
+      </tr>
+      <tr th:each="film : ${films}">
+      	<td th:text="${film.title}">1</td>
+        <td th:text="${film.duration}">Name</td>
+        <td th:text="${film.description}">City</td>
+        <td>
+        	<form th:action="@{/films/__${film.id}__}" method="get">
+    		<input type="submit" value="Details" />
+   			 </form>
+        </td>
+        <td>
+        	<form th:action="@{/films/delete/__${film.id}__}" method="post">
+    		<input type="submit" value="delete" />
+   			 </form>
+        </td>
+        <td>
+        	<form th:action="@{/films/edit/__${film.id}__}" method="get">
+    		<input type="submit" value="edit" />
+   			 </form>
+        </td>
+      </tr>
+      
+    </table>
+    <form th:action="@{/films/add}" method="get">
+    	<input type="submit" value="Add" />
+    </form>
+  	
+  </body>
+
+</html>

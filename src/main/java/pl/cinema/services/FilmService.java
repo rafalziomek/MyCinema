@@ -34,6 +34,12 @@ public class FilmService {
 		return films.get(size - 1).getId();
 	}
 	
+	public long getFirstRecordId() {
+		List<Film> films = this.getAll();
+		return films.get(0).getId();
+	}
+	
+	
 	public void clear() {
 		filmRepository.deleteAll();
 	}
