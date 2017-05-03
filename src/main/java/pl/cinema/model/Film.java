@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 @Entity
 @Table(name="film")
 public class Film {
@@ -13,6 +14,8 @@ public class Film {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String title;
+	
+	@Min(1)
 	private int duration;
 	private String description;
 	

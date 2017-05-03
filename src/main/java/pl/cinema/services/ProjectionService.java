@@ -14,7 +14,7 @@ public class ProjectionService {
 	@Autowired 
 	private ProjectionRepository projectionRepository;
 	
-	public List<Projection> getAllProjections(Long filmId) {
+	public List<Projection> getAllProjections() {
 		List<Projection> projections = projectionRepository.findAll();
 		return projections;
 	}

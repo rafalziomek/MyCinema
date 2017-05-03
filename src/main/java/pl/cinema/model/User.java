@@ -14,12 +14,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.Email;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 @Table(name = "users")
 public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
 	private long id;
 	
 	@Column(name = "email", unique = true, nullable = false)
@@ -32,7 +33,7 @@ public class User {
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
 	private Set<UserRole> userRole;
 	
 	public User() {
@@ -55,6 +56,14 @@ public class User {
 	}
 
 	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	public String getEmail() {
 		return this.email;
 	}

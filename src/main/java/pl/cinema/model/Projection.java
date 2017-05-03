@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Future;
 
 @Entity
@@ -21,13 +22,20 @@ public class Projection {
 	
 	@ManyToOne
 	@JoinColumn(name = "film_id", 
-		foreignKey = @ForeignKey(name = "FILM_ID_FK"))
+		foreignKey = @ForeignKey(name = "FILM_ID_FK"), nullable = false)
 	private Film film;
 	
-	private LocalDateTime startDate;
+	@ManyToOne
+	@JoinColumn(name = "reservation_id", 
+		foreignKey = @ForeignKey(name = "RESERVATION_ID_FK"))
+	private Reservation reservation;
 	
 	public Projection() {
-		startDate = LocalDateTime.now();
+		
+	}
+	
+	public Projection(Film film) {
+		this.film = film;
 	}
 
 	public long getId() {
@@ -44,14 +52,6 @@ public class Projection {
 
 	public void setFilm(Film film) {
 		this.film = film;
-	}
-
-	public LocalDateTime getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(LocalDateTime startDate) {
-		this.startDate = startDate;
 	}
 
 	@Override
