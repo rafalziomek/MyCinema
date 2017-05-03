@@ -30,6 +30,14 @@ public class Projection {
 		foreignKey = @ForeignKey(name = "RESERVATION_ID_FK"))
 	private Reservation reservation;
 	
+	public Reservation getReservation() {
+		return reservation;
+	}
+
+	public void setReservation(Reservation reservation) {
+		this.reservation = reservation;
+	}
+
 	public Projection() {
 		
 	}
