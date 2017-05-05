@@ -5,7 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 @Entity
 @Table(name="film")
 public class Film {
@@ -13,10 +16,16 @@ public class Film {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+	
+	@Size(min = 1, max = 100, message = "Title should contains 1 to 100 characters")
+	@NotNull
 	private String title;
 	
-	@Min(1)
+	@NotNull
+	@Min(value = 1, message = "Duration of film should be greater then 1")
 	private int duration;
+	
+	@Size(min = 5, max = 250, message = "Description should contains 5 to 250 characters")
 	private String description;
 	
 	

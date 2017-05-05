@@ -18,8 +18,6 @@ public class ReservationService {
 	@Autowired 
 	private ReservationRepository reservationRepository;
 	
-	@Autowired
-	private Validator validator;
 	
 	public List<Reservation> getAll() {
 		return reservationRepository.findAll();
@@ -28,7 +26,7 @@ public class ReservationService {
 		reservationRepository.save(reservation);
 	}
 	
-	public List<Reservation> getDate(Reservation reservation) {
+	public List<Reservation> getBookedReservations(Reservation reservation) {
 		return reservationRepository.findDateOccurences(reservation);
 	}
 }

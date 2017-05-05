@@ -9,7 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
+import org.junit.validator.ValidateWith;
 import org.springframework.validation.annotation.Validated;
 
 @Entity
@@ -19,13 +21,14 @@ public class Reservation {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
+	@NotNull
 	private LocalDateTime startDate;
 	
 	private LocalDateTime endDate;
 	
 	@ManyToOne
 	@JoinColumn(name = "hall_id", 
-		foreignKey = @ForeignKey(name = "HALL_ID_FK"))
+		foreignKey = @ForeignKey(name = "HALL_ID_FK"), nullable = false)
 	private Hall hall;
 	
 	public Reservation() {

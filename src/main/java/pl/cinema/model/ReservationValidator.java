@@ -23,10 +23,9 @@ public class ReservationValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		Reservation reservation = (Reservation) target;
-		List<Reservation> wrongReservations = reservationService.getDate(reservation);
-		if(wrongReservations.size() == 0) {
+		List<Reservation> wrongReservations = reservationService.getBookedReservations(reservation);
+		if(wrongReservations.size() > 0) {
 			errors.reject("hall is booked", "On this date hall is booked");
 		}
 	}
-
 }

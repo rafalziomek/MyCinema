@@ -2,21 +2,22 @@ package pl.cinema.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pl.cinema.model.Film;
+import pl.cinema.model.FilmDeleteValidator;
 import pl.cinema.model.Projection;
-import pl.cinema.repositories.FilmRepository;
 import pl.cinema.services.FilmService;
 import pl.cinema.services.ProjectionService;
 
@@ -30,10 +31,14 @@ public class FilmController {
 	@Autowired
 	private ProjectionService projectionService;
 	
+	@Autowired
+	private FilmDeleteValidator filmDeleteValidator;
+	
 	@GetMapping()
 	public String getAll(Model model) {
 		List<Film> films = filmService.getAll();
 		model.addAttribute("films", films);
+		
 		return "films";
 	}
 	
@@ -53,18 +58,32 @@ public class FilmController {
 	}
 	
 	@PostMapping("/add")
-	@ResponseBody
-	public String addFilm(@ModelAttribute(name="film") Film film) {
+	public String addFilm(@Valid Film film, BindingResult result) {
+		if(result.hasErrors()) {
+			return "addFilm";
+		}
 		filmService.addFilm(film);
-		return "Succesfully added";
+		return "redirect:/films";
+	}
+	
+	@GetMapping("/delete/{id}")
+	public String getDeleteFilm(@PathVariable long id, Model model) {
+		Film film = filmService.getFilmById(id);
+		model.addAttribute("film", film);
+		return "deleteFilm";
 	}
 	
 	@PostMapping("/delete/{id}")
-	@ResponseBody
-	public String deleteFilm(@PathVariable long id) {
+	public String deleteFilm(@PathVariable long id, @ModelAttribute(name="film") Film film,  BindingResult result) {
+		filmDeleteValidator.validate(film, result);
+		if(result.hasErrors()) {
+			return "deleteFilm";
+		} 
 		filmService.deleteFilmById(id);
-		return "Succesfully deleted";
+		return "redirect:/films";
 	}
+	
+	
 	
 	@GetMapping("/edit/{id}")
 	public String getEditFilm(@PathVariable long id, Model model) {

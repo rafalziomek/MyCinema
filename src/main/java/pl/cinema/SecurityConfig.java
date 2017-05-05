@@ -23,13 +23,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private AppUserDetailsService userDetailsService;
 	
 	private String[] allRoles = {"ADMIN","MANAGER","USER"};
-	private String[] adminManagerRoles = {"ADMIN","MANAGER","USER"};
+	private String[] adminManagerRoles = {"ADMIN","MANAGER"};
 	
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/films/add", "/films/delete", "/films/edit")
+                .antMatchers("/films/add", "/films/delete/**", "/films/edit/**")
                 .hasAnyRole(allRoles)
                 .antMatchers("/usermanager")
                 .hasAnyRole(adminManagerRoles)
