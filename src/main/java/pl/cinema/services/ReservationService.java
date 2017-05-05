@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.Temporal;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ import pl.cinema.repositories.ReservationRepository;
 public class ReservationService {
 	@Autowired 
 	private ReservationRepository reservationRepository;
+	
+	@Autowired
+	private Validator validator;
 	
 	public List<Reservation> getAll() {
 		return reservationRepository.findAll();

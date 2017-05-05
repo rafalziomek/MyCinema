@@ -22,6 +22,22 @@ public class Hall {
 	public Hall() {
 		
 	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Hall other = (Hall) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+	
 	
 	
 	

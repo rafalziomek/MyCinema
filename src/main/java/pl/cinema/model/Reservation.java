@@ -3,11 +3,17 @@ package pl.cinema.model;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.springframework.validation.annotation.Validated;
 
 @Entity
+@Validated
 public class Reservation {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,6 +23,11 @@ public class Reservation {
 	
 	private LocalDateTime endDate;
 	
+	@ManyToOne
+	@JoinColumn(name = "hall_id", 
+		foreignKey = @ForeignKey(name = "HALL_ID_FK"))
+	private Hall hall;
+	
 	public Reservation() {
 		
 	}
@@ -24,6 +35,7 @@ public class Reservation {
 	public Reservation(Hall hall, LocalDateTime startDate, int duration) {
 		this.startDate = startDate;
 		endDate = startDate.plusMinutes(duration).plusMinutes(15);
+		this.hall = hall;
 	}
 
 	public LocalDateTime getStartDate() {
@@ -48,6 +60,14 @@ public class Reservation {
 
 	public void setEndDate(LocalDateTime endDate) {
 		this.endDate = endDate;
+	}
+
+	public Hall getHall() {
+		return hall;
+	}
+
+	public void setHall(Hall hall) {
+		this.hall = hall;
 	}
 
 	@Override

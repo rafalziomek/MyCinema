@@ -2,6 +2,7 @@ package pl.cinema.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Future;
+
 
 @Entity
 @Table(name="projection")
@@ -25,10 +27,14 @@ public class Projection {
 		foreignKey = @ForeignKey(name = "FILM_ID_FK"), nullable = false)
 	private Film film;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "reservation_id", 
 		foreignKey = @ForeignKey(name = "RESERVATION_ID_FK"))
 	private Reservation reservation;
+	
+	public Projection() {
+	}
+	
 	
 	public Reservation getReservation() {
 		return reservation;
@@ -38,9 +44,7 @@ public class Projection {
 		this.reservation = reservation;
 	}
 
-	public Projection() {
-		
-	}
+	
 	
 	public Projection(Film film) {
 		this.film = film;
