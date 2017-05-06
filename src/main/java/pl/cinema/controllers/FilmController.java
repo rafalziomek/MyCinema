@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import pl.cinema.model.Film;
 import pl.cinema.model.validators.*;
@@ -33,6 +32,9 @@ public class FilmController {
 	
 	@Autowired
 	private FilmDeleteValidator filmDeleteValidator;
+	
+	@Autowired
+	private FilmUniqueTitleValidator filmUniqueTitleValidator;
 	
 	@GetMapping()
 	public String getAll(Model model) {
@@ -59,6 +61,7 @@ public class FilmController {
 	
 	@PostMapping("/add")
 	public String addFilm(@Valid @ModelAttribute("film") Film film, BindingResult result) {
+		filmUniqueTitleValidator.validate(film, result);
 		if(result.hasErrors()) {
 			return "film/addFilm";
 		}
@@ -93,10 +96,13 @@ public class FilmController {
 	}
 	
 	@PostMapping("/edit/{id}")
-	@ResponseBody
-	public String editFilm(@PathVariable long id, @ModelAttribute(name="film") Film film) {
+	public String editFilm(@PathVariable long id, @Valid @ModelAttribute(name="film") Film film, BindingResult result) {
 		film.setId(id);
+		filmUniqueTitleValidator.validate(film, result);
+		if(result.hasErrors()) {
+			return "film/editFilm";
+		}
 		filmService.addFilm(film);
-		return "Succesfully updated";
+		return "redirect:/films";
 	}
 }

@@ -68,6 +68,76 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		.andExpect(content().string(containsString("Description should contains 5 to 250 characters")));
 	}
 	
+	@Test
+	@WithMockUser
+	public void testValidationEditFilm() throws Exception {
+		Film film = new Film("filmEditValidation");
+		film.setDuration(20);
+		film.setDescription("description");
+		filmService.addFilm(film);
+		
+		long id = filmService.getFilmByTitle("filmEditValidation").getId();
+		mockMvc
+		.perform(post("/films/edit/" + id)
+		.with(csrf())
+		.param("title", "")
+		.param("duration", "0")
+		.param("description", ""))
+		.andExpect(status().isOk())
+		.andExpect(model().attributeErrorCount("film", 3))
+		.andExpect(model().attributeHasFieldErrors("film", "title","description","duration"))
+		.andExpect(view().name("film/editFilm"))
+		.andDo(print())
+		.andExpect(content().string(containsString("Title should contains 1 to 100 characters")))
+		.andExpect(content().string(containsString("Duration of film should be greater then 1")))
+		.andExpect(content().string(containsString("Description should contains 5 to 250 characters")));
+		
+		filmService.deleteFilmById(id);
+	}
+	
+	@Test
+	@WithMockUser
+	public void testUniqueAddFilm() throws Exception {
+		Film film = new Film("notUniqueTitle");
+		film.setDuration(20);
+		film.setDescription("someValidAndGoodDescription");
+		
+		filmService.addFilm(film);
+		
+		mockMvc.perform(post("/films/add")
+				.with(csrf())
+				.param("title", "notUniqueTitle")
+				.param("duration", "23")
+				.param("description", "description"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeErrorCount("film", 1))
+				.andExpect(model().attributeHasFieldErrors("film", "title"))
+				.andDo(print())
+				.andExpect(content().string(containsString("Title has to be unique")));
+		filmService.deleteFilmById(film.getId());
+	}
+	
+	@Test
+	@WithMockUser
+	public void testUniqueEditFilm() throws Exception {
+		Film film = new Film("notUniqueTitle");
+		film.setDuration(20);
+		film.setDescription("someValidAndGoodDescription");
+		
+		filmService.addFilm(film);
+		long id = film.getId();
+		mockMvc.perform(post("/films/edit/" + id)
+				.with(csrf())
+				.param("title", "notUniqueTitle")
+				.param("duration", "23")
+				.param("description", "description"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeErrorCount("film", 1))
+				.andExpect(model().attributeHasFieldErrors("film", "title"))
+				.andDo(print())
+				.andExpect(content().string(containsString("Title has to be unique")));
+		filmService.deleteFilmById(id);
+	}
 	
 	@Test
 	@WithMockUser
@@ -129,7 +199,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 			.param("title", "editTitle")
 			.param("duration", "22")
 			.param("description", "editDescription"))
-			.andExpect(status().isOk());
+			.andExpect(status().is3xxRedirection());
 		
 		film = filmService.getFilmById(id);
 		String expectedTitle = "editTitle";

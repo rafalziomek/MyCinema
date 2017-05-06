@@ -12,8 +12,11 @@
   	<h1>Form</h1>
     <form th:action="@{/films/edit/__${film.id}__}" th:object="${film}" method="post">
     	<p>Title <input type="text" th:field="*{title}" /></p>
+    	<p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Name Error</p>
         <p>Duration: <input type="text" th:field="*{duration}" /></p>
+        <p th:if="${#fields.hasErrors('duration')}" th:errors="*{duration}">Name Error</p>
         <p>Description: <input type="text" th:field="*{description}" /></p>
+        <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</p>
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
   </body>
