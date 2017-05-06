@@ -20,7 +20,7 @@
       </tr>
       <tr th:each="projection : ${projections}">
       	<td th:text="${projection.id}">1</td>
-        <td th:text="${projection.startDate}">Name</td>
+        <td th:text="${projection.reservation.startDate}">Name</td>
       </tr>
     </table>
   	

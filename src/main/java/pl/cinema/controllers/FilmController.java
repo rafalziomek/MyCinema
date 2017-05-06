@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pl.cinema.model.Film;
-import pl.cinema.model.FilmDeleteValidator;
+import pl.cinema.model.validators.*;
 import pl.cinema.model.Projection;
 import pl.cinema.services.FilmService;
 import pl.cinema.services.ProjectionService;
@@ -58,7 +58,7 @@ public class FilmController {
 	}
 	
 	@PostMapping("/add")
-	public String addFilm(@Valid Film film, BindingResult result) {
+	public String addFilm(@Valid @ModelAttribute("film") Film film, BindingResult result) {
 		if(result.hasErrors()) {
 			return "addFilm";
 		}

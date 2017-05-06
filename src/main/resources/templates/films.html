@@ -10,6 +10,7 @@
   </head>
 
   <body>
+    
     <table>
       <tr>
       	<th>Title</th>
@@ -26,7 +27,7 @@
    			 </form>
         </td>
         <td>
-        	<form th:action="@{/films/delete/__${film.id}__}" method="post">
+        	<form th:action="@{/films/delete/__${film.id}__}" method="get">
     		<input type="submit" value="delete" />
    			 </form>
         </td>

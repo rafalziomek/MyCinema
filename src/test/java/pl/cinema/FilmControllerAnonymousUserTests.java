@@ -67,7 +67,7 @@ public class FilmControllerAnonymousUserTests extends FilmControllerTest {
 		long id = filmToDelete.getId();
 		mockMvc
 			.perform(post("/films/delete/" + id))
-			.andExpect(unauthenticated());
+			.andExpect(status().is4xxClientError());
 		films = filmService.getAll();
 		boolean filmsContainsFilmToDelete = films.contains(filmToDelete);
 		assertTrue(filmsContainsFilmToDelete);

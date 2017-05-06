@@ -10,4 +10,5 @@ public interface FilmRepository extends CrudRepository<Film, Long>{
 	
 	public Film findById(long id);
 	public List<Film> findAll();
+	public Film findByTitle(String title);
 }

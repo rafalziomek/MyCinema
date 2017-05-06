@@ -35,29 +35,16 @@ public abstract class FilmControllerTest {
 	@Autowired
 	protected ProjectionService projectionService;
 	
+	@Autowired
+	private FilmInitializer filmInitializer;
+	
 	@Before
 	public void initialize() {
-		FilmInitializer.initializeFilms(filmService);
+		filmInitializer.initialize();
 		mockMvc = MockMvcBuilders
 				.webAppContextSetup(context)
 				.apply(springSecurity()) 
 				.build();
 	}
-	
-	@After
-	public void clear() {
-		filmService.clear();
-		projectionService.clear();
-	}
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
 	
 }

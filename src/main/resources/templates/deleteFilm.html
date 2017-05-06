@@ -1,0 +1,21 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <title>Films</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   
+  </head>
+  <body>
+	<p th:if="${#fields.hasErrors('${film}')}" th:errors="${film}">Incorrect date</p>
+	<div th:if="${not #fields.hasErrors('${film}')}">
+		<h1>Are you sure??</h1>
+    	<form th:action="@{/films/delete/__${film.id}__}" method="post">
+    		<input type="submit" value="delete" />
+   			 </form>
+	</div>
+  	
+  </body>
+</html>
