@@ -39,7 +39,7 @@ public class FilmController {
 		List<Film> films = filmService.getAll();
 		model.addAttribute("films", films);
 		
-		return "films";
+		return "film/films";
 	}
 	
 	@GetMapping("/{id}")
@@ -48,19 +48,19 @@ public class FilmController {
 		List<Projection> projections = projectionService.getAllProjectionsByFilmId(id);
 		model.addAttribute("film", film);
 		model.addAttribute("projections", projections);
-		return "filmDetails";
+		return "film/filmDetails";
 	}
 	
 	@GetMapping("/add")
 	public String getAddFilm(Model model) {
 		model.addAttribute("film", new Film());
-		return "addFilm";
+		return "film/addFilm";
 	}
 	
 	@PostMapping("/add")
 	public String addFilm(@Valid @ModelAttribute("film") Film film, BindingResult result) {
 		if(result.hasErrors()) {
-			return "addFilm";
+			return "film/addFilm";
 		}
 		filmService.addFilm(film);
 		return "redirect:/films";
@@ -70,14 +70,14 @@ public class FilmController {
 	public String getDeleteFilm(@PathVariable long id, Model model) {
 		Film film = filmService.getFilmById(id);
 		model.addAttribute("film", film);
-		return "deleteFilm";
+		return "film/deleteFilm";
 	}
 	
 	@PostMapping("/delete/{id}")
 	public String deleteFilm(@PathVariable long id, @ModelAttribute(name="film") Film film,  BindingResult result) {
 		filmDeleteValidator.validate(film, result);
 		if(result.hasErrors()) {
-			return "deleteFilm";
+			return "film/deleteFilm";
 		} 
 		filmService.deleteFilmById(id);
 		return "redirect:/films";
@@ -89,7 +89,7 @@ public class FilmController {
 	public String getEditFilm(@PathVariable long id, Model model) {
 		Film filmToEdit = filmService.getFilmById(id);
 		model.addAttribute("film", filmToEdit);
-		return "editFilm";
+		return "film/editFilm";
 	}
 	
 	@PostMapping("/edit/{id}")

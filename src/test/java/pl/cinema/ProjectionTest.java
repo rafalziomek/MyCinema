@@ -3,16 +3,7 @@ package pl.cinema;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +15,8 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 
+import pl.cinema.initializers.FilmInitializer;
+import pl.cinema.initializers.ProjectionInitializer;
 import pl.cinema.model.Film;
 import pl.cinema.model.Hall;
 import pl.cinema.model.Projection;

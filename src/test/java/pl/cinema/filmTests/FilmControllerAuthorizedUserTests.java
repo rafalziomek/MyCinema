@@ -1,9 +1,10 @@
-package pl.cinema;
+package pl.cinema.filmTests;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -14,10 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.ResultMatcher;
 
 import pl.cinema.model.Film;
 import pl.cinema.model.Projection;
@@ -44,6 +45,8 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		assertEquals(film.getDescription(), expectedDescription);
 		assertEquals(film.getDuration(), expectedDuration);
 		assertEquals(film.getTitle(), expectedTitle);
+		long id = film.getId();
+		filmService.deleteFilmById(id);
 	}
 	
 	@Test
@@ -58,7 +61,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		.andExpect(status().isOk())
 		.andExpect(model().attributeErrorCount("film", 3))
 		.andExpect(model().attributeHasFieldErrors("film", "title","description","duration"))
-		.andExpect(view().name("addFilm"))
+		.andExpect(view().name("film/addFilm"))
 		.andDo(print())
 		.andExpect(content().string(containsString("Title should contains 1 to 100 characters")))
 		.andExpect(content().string(containsString("Duration of film should be greater then 1")))
@@ -69,40 +72,58 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 	@Test
 	@WithMockUser
 	public void testDeleteFilm() throws Exception {
-		List<Film> films = filmService.getAll();
-		Film filmToDelete = filmService.getFilmById(filmService.getFirstRecordId());
-		long id = filmToDelete.getId();
+		Film film = new Film("filmDelete");
+		film.setDuration(20);
+		film.setDescription("description");
+		filmService.addFilm(film);
+		
+		film = filmService.getFilmByTitle("filmDelete");
+		long id = film.getId();
+		
 		mockMvc
 			.perform(post("/films/delete/" + id).with(csrf()))
 			.andExpect(status().is3xxRedirection());
-		films = filmService.getAll();
-		boolean filmsContainsFilmToDelete = films.contains(filmToDelete);
-		assertFalse(filmsContainsFilmToDelete);
-	
+		
+		film = filmService.getFilmByTitle("filmDelete");
+		assertNull(film);
 	}
 	
 	@Test
 	@WithMockUser
-	public void testDeleteFilmWhichIsOnProjection() throws Exception {
+	public void testDeleteFilmWhichIsOnProjection() {
 		List<Projection> projections = projectionService.getAllProjections();
-		Film film = projections.get(0).getFilm();
-		long id = film.getId();
-		mockMvc
-			.perform(post("/films/delete/" + id).with(csrf()))
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString("This film is on projection, you cant delete it")));
-		testFilmsContains(film);
+		List<Projection> projectionsWithFilm = projections.stream().filter(p -> (p.getFilm() != null)).collect(Collectors.toList());
+		projectionsWithFilm.forEach(p -> {
+			Film film = p.getFilm();
+			long id = film.getId();
+			try {
+				mockMvc
+				.perform(post("/films/delete/" + id).with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("This film is on projection, you cant delete it")));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			testFilmsContains(film);
+		});
 	}
+
 	
 	private void testFilmsContains(Film film) {
 		List<Film> films = filmService.getAll();
-		boolean filmsContainsFilm = films.contains(films);
+		boolean filmsContainsFilm = films.contains(film);
 		assertTrue(filmsContainsFilm);
 	}
+	
 	@Test
 	@WithMockUser
 	public void testEditFilm() throws Exception {
-		long id = filmService.getFirstRecordId();
+		Film film = new Film("filmEdit");
+		film.setDuration(20);
+		film.setDescription("description");
+		filmService.addFilm(film);
+		
+		long id = filmService.getFilmByTitle("filmEdit").getId();
 		mockMvc
 			.perform(post("/films/edit/" + id).with(csrf())
 			.param("title", "editTitle")
@@ -110,7 +131,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 			.param("description", "editDescription"))
 			.andExpect(status().isOk());
 		
-		Film film = filmService.getFilmById(id);
+		film = filmService.getFilmById(id);
 		String expectedTitle = "editTitle";
 		String expectedDescription = "editDescription";
 		int expectedDuration = 22;
@@ -118,6 +139,8 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		assertEquals(film.getDescription(), expectedDescription);
 		assertEquals(film.getDuration(), expectedDuration);
 		assertEquals(film.getTitle(), expectedTitle);
+		
+		filmService.deleteFilmById(id);
 	} 
 	
 	

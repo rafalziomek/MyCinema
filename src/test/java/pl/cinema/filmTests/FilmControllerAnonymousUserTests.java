@@ -1,4 +1,4 @@
-package pl.cinema;
+package pl.cinema.filmTests;
 
 import static org.junit.Assert.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;

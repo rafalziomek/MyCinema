@@ -1,4 +1,4 @@
-package pl.cinema;
+package pl.cinema.initializers;
 
 import java.util.List;
 
