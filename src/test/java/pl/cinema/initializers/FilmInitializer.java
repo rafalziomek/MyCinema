@@ -28,7 +28,7 @@ public class FilmInitializer extends Initializer<Film> {
 			film.setDuration(i*2);
 			films.add(film);
 			if(initializeDatabase) {
-				filmService.addFilm(film);
+				filmService.add(film);
 			}
 		}
 		return films;

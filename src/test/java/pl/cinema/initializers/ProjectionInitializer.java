@@ -32,7 +32,7 @@ public class ProjectionInitializer extends Initializer<Projection> {
 	
 	@Override
 	protected boolean conditionInitialize() {
-		return projectionService.getAllProjections().size() == 0;
+		return projectionService.getAll().size() == 0;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class ProjectionInitializer extends Initializer<Projection> {
 								i*3);
 				projection.setReservation(res);
 				if(initializeDatabase) {
-					projectionService.saveProjection(projection);
+					projectionService.add(projection);
 				}
 				projections.add(projection);
 			}

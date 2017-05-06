@@ -1,4 +1,4 @@
-package pl.cinema;
+package pl.cinema.projectionTests;
 
 import static org.junit.Assert.*;
 
@@ -31,16 +31,10 @@ import pl.cinema.services.ReservationService;
 public class ProjectionTest {
 	
 	@Autowired
-	private ProjectionService projectionService;
-	
-	@Autowired
 	private ProjectionInitializer projectionInitializer;
 	
 	@Autowired
 	private ReservationService reservationService;
-	
-	@Autowired
-	private FilmService filmService;
 	
 	@Autowired
 	private FilmInitializer filmInitializer;

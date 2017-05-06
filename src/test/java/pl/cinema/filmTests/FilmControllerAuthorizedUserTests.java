@@ -61,7 +61,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		.andExpect(status().isOk())
 		.andExpect(model().attributeErrorCount("film", 3))
 		.andExpect(model().attributeHasFieldErrors("film", "title","description","duration"))
-		.andExpect(view().name("film/addFilm"))
+		.andExpect(view().name("film/add"))
 		.andDo(print())
 		.andExpect(content().string(containsString("Title should contains 1 to 100 characters")))
 		.andExpect(content().string(containsString("Duration of film should be greater then 1")))
@@ -74,7 +74,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		Film film = new Film("filmEditValidation");
 		film.setDuration(20);
 		film.setDescription("description");
-		filmService.addFilm(film);
+		filmService.add(film);
 		
 		long id = filmService.getFilmByTitle("filmEditValidation").getId();
 		mockMvc
@@ -86,7 +86,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		.andExpect(status().isOk())
 		.andExpect(model().attributeErrorCount("film", 3))
 		.andExpect(model().attributeHasFieldErrors("film", "title","description","duration"))
-		.andExpect(view().name("film/editFilm"))
+		.andExpect(view().name("film/edit"))
 		.andDo(print())
 		.andExpect(content().string(containsString("Title should contains 1 to 100 characters")))
 		.andExpect(content().string(containsString("Duration of film should be greater then 1")))
@@ -102,7 +102,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		film.setDuration(20);
 		film.setDescription("someValidAndGoodDescription");
 		
-		filmService.addFilm(film);
+		filmService.add(film);
 		
 		mockMvc.perform(post("/films/add")
 				.with(csrf())
@@ -124,7 +124,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		film.setDuration(20);
 		film.setDescription("someValidAndGoodDescription");
 		
-		filmService.addFilm(film);
+		filmService.add(film);
 		long id = film.getId();
 		mockMvc.perform(post("/films/edit/" + id)
 				.with(csrf())
@@ -145,7 +145,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		Film film = new Film("filmDelete");
 		film.setDuration(20);
 		film.setDescription("description");
-		filmService.addFilm(film);
+		filmService.add(film);
 		
 		film = filmService.getFilmByTitle("filmDelete");
 		long id = film.getId();
@@ -161,7 +161,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 	@Test
 	@WithMockUser
 	public void testDeleteFilmWhichIsOnProjection() {
-		List<Projection> projections = projectionService.getAllProjections();
+		List<Projection> projections = projectionService.getAll();
 		List<Projection> projectionsWithFilm = projections.stream().filter(p -> (p.getFilm() != null)).collect(Collectors.toList());
 		projectionsWithFilm.forEach(p -> {
 			Film film = p.getFilm();
@@ -191,7 +191,7 @@ public class FilmControllerAuthorizedUserTests extends FilmControllerTest {
 		Film film = new Film("filmEdit");
 		film.setDuration(20);
 		film.setDescription("description");
-		filmService.addFilm(film);
+		filmService.add(film);
 		
 		long id = filmService.getFilmByTitle("filmEdit").getId();
 		mockMvc

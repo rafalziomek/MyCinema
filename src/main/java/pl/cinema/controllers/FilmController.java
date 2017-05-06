@@ -1,5 +1,6 @@
 package pl.cinema.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,31 +19,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.cinema.model.Film;
 import pl.cinema.model.validators.*;
 import pl.cinema.model.Projection;
+import pl.cinema.services.CinemaService;
 import pl.cinema.services.FilmService;
 import pl.cinema.services.ProjectionService;
 
 @Controller
 @RequestMapping("/films")
-public class FilmController {
+public class FilmController extends AbstractCinemaController<Film>{
 	
-	@Autowired
+	
 	private FilmService filmService;
 	
 	@Autowired
 	private ProjectionService projectionService;
 	
 	@Autowired
-	private FilmDeleteValidator filmDeleteValidator;
+	private Validator filmDeleteValidator;
 	
 	@Autowired
-	private FilmUniqueTitleValidator filmUniqueTitleValidator;
-	
-	@GetMapping()
-	public String getAll(Model model) {
-		List<Film> films = filmService.getAll();
-		model.addAttribute("films", films);
-		
-		return "film/films";
+	public FilmController(FilmService filmService, Validator filmUniqueTitleValidator) {
+		super(filmService, filmUniqueTitleValidator);
+		this.filmService = filmService;
 	}
 	
 	@GetMapping("/{id}")
@@ -56,17 +54,12 @@ public class FilmController {
 	@GetMapping("/add")
 	public String getAddFilm(Model model) {
 		model.addAttribute("film", new Film());
-		return "film/addFilm";
+		return "film/add";
 	}
 	
 	@PostMapping("/add")
 	public String addFilm(@Valid @ModelAttribute("film") Film film, BindingResult result) {
-		filmUniqueTitleValidator.validate(film, result);
-		if(result.hasErrors()) {
-			return "film/addFilm";
-		}
-		filmService.addFilm(film);
-		return "redirect:/films";
+		return add(film, result);
 	}
 	
 	@GetMapping("/delete/{id}")
@@ -86,8 +79,6 @@ public class FilmController {
 		return "redirect:/films";
 	}
 	
-	
-	
 	@GetMapping("/edit/{id}")
 	public String getEditFilm(@PathVariable long id, Model model) {
 		Film filmToEdit = filmService.getFilmById(id);
@@ -98,11 +89,6 @@ public class FilmController {
 	@PostMapping("/edit/{id}")
 	public String editFilm(@PathVariable long id, @Valid @ModelAttribute(name="film") Film film, BindingResult result) {
 		film.setId(id);
-		filmUniqueTitleValidator.validate(film, result);
-		if(result.hasErrors()) {
-			return "film/editFilm";
-		}
-		filmService.addFilm(film);
-		return "redirect:/films";
+		return edit(film, result);
 	}
 }

@@ -10,11 +10,11 @@ import pl.cinema.model.Projection;
 import pl.cinema.repositories.ProjectionRepository;
 
 @Service
-public class ProjectionService {
+public class ProjectionService implements CinemaService<Projection>{
 	@Autowired 
 	private ProjectionRepository projectionRepository;
-	
-	public List<Projection> getAllProjections() {
+
+	public List<Projection> getAll() {
 		List<Projection> projections = projectionRepository.findAll();
 		return projections;
 	}
@@ -24,12 +24,22 @@ public class ProjectionService {
 		return projections;
 	}
 	
-	public void saveProjection(Projection projection) {
+	public void add(Projection projection) {
 		projectionRepository.save(projection);
 	}
 	
 	public void clear() {
 		projectionRepository.deleteAll();
+	}
+
+	@Override
+	public String getModelName() {
+		return "projection";
+	}
+
+	@Override
+	public String getModelCollectionName() {
+		return "projections";
 	}
 	
 	

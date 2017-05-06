@@ -9,7 +9,7 @@ import pl.cinema.model.Film;
 import pl.cinema.repositories.FilmRepository;
 
 @Service
-public class FilmService {
+public class FilmService implements CinemaService<Film>{
 	@Autowired
 	private FilmRepository filmRepository;
 	
@@ -22,7 +22,7 @@ public class FilmService {
 	public Film getFilmByTitle(String title) {
 		return filmRepository.findByTitle(title);
 	}
-	public void addFilm(Film film) {
+	public void add(Film film) {
 		filmRepository.save(film);
 	}
 	
@@ -44,5 +44,13 @@ public class FilmService {
 	
 	public void clear() {
 		filmRepository.deleteAll();
+	}
+	@Override
+	public String getModelName() {
+		return "film";
+	}
+	@Override
+	public String getModelCollectionName() {
+		return "films";
 	}
 }
