@@ -1,4 +1,4 @@
-package pl.cinema.model;
+package pl.cinema.model.validators;
 
 import java.util.List;
 
@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import pl.cinema.model.Film;
+import pl.cinema.model.Projection;
 import pl.cinema.services.ProjectionService;
 
 @Component
@@ -23,7 +25,7 @@ public class FilmDeleteValidator implements Validator{
 		Film film = (Film) target;
 		List<Projection> filmProjections = projectionService.getAllProjectionsByFilmId(film.getId());
 		if(filmProjections.size() > 0) {
-			errors.reject("cannot delete film", "This film is on projection, you can't delete it");
+			errors.reject("cannot delete film", "This film is on projection, you cant delete it");
 		}
 	}
 

@@ -1,4 +1,4 @@
-package pl.cinema.model;
+package pl.cinema.model.validators;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import pl.cinema.model.Reservation;
 import pl.cinema.services.ReservationService;
 
 @Component
