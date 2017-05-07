@@ -71,6 +71,9 @@ public class ProjectionController extends AbstractCinemaController<Projection> {
 			model.addAttribute("projection", projection);
 			return "projection/add";
 		}
+		LocalDateTime startDate = projection.getReservation().getStartDate();
+		int duration = projection.getFilm().getDuration();
+		projection.getReservation().setEndDate(startDate.plusMinutes(duration).plusMinutes(15));;
 		projectionService.add(projection);
 		return "redirect:/projections";
 	}
