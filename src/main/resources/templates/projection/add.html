@@ -1,0 +1,47 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <title>Films</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      
+      <link rel="stylesheet" href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"></link>
+      <link rel="stylesheet" href="/webjars/jQuery-Timepicker-Addon/1.5.0/jquery-ui-timepicker-addon.min.css"></link>
+  	 <script src="/webjars/jquery/3.2.0/jquery.min.js"></script>
+  	 <script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"></script>
+  	 <script src="/webjars/jQuery-Timepicker-Addon/1.5.0/jquery-ui-timepicker-addon.min.js"></script>
+  </head>
+  <body>
+  	<h1>Form</h1>
+  	<ul>
+  <li th:each="err : ${#fields.errors('projection')}" th:text="${err}" />
+</ul>
+    <form th:action="@{/projections/add}" th:object="${projection}" method="post">
+    	<p>Film</p>
+        <select th:field="*{film}">
+  			<option th:each="film : ${films}" 
+          	th:value="${film.id}" 
+          	th:text="${film.title}">Film title</option>
+		</select>
+		<p>Hall</p>
+		<select th:field="*{reservation.hall}">
+  			<option th:each="hall : ${halls}" 
+          	th:value="${hall.id}" 
+          	th:text="${hall.id}">Film title</option>
+		</select>
+		<p>Start date 
+		<input type="text" id="selector" th:field="${projection.reservation.startDate}" th:value="${projection.reservation.startDate}"/></p>
+    	<p th:if="${#fields.hasErrors('reservation')}" th:errors="*{reservation}">Name Error</p>
+    	
+    	<input type="submit" value="Submit" />
+    </form>
+  	
+  </body>
+    <script>
+  $( function() {
+    $( "#selector" ).datetimepicker();
+  } );
+  </script>
+</html>

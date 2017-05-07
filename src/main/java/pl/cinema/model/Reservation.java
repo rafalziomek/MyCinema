@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.junit.validator.ValidateWith;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 
 @Entity
@@ -22,8 +23,10 @@ public class Reservation {
 	private long id;
 	
 	@NotNull
+	@DateTimeFormat(pattern = "MM/dd/yyyy HH:mm")
 	private LocalDateTime startDate;
 	
+	@DateTimeFormat(pattern = "MM/dd/yyyy HH:mm")
 	private LocalDateTime endDate;
 	
 	@ManyToOne

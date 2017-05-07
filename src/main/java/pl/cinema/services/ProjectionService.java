@@ -2,8 +2,10 @@ package pl.cinema.services;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import pl.cinema.model.Film;
 import pl.cinema.model.Projection;
@@ -24,6 +26,7 @@ public class ProjectionService implements CinemaService<Projection>{
 		return projections;
 	}
 	
+	@Transactional
 	public void add(Projection projection) {
 		projectionRepository.save(projection);
 	}

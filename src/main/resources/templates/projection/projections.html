@@ -13,33 +13,19 @@
     
     <table>
       <tr>
-      	<th>Title</th>
-        <th>Duration</th>
-        <th>Description</th>
+      	<th>Film title</th>
+        <th>Film description</th>
+        <th>Start Date</th>
+        <th>Hall</th>
       </tr>
       <tr th:each="projection : ${projections}">
-      	<td th:text="${film.title}">1</td>
-        <td th:text="${film.duration}">Name</td>
-        <td th:text="${film.description}">City</td>
-        <td>
-        	<form th:action="@{/films/__${projection.id}__}" method="get">
-    		<input type="submit" value="Details" />
-   			 </form>
-        </td>
-        <td>
-        	<form th:action="@{/films/delete/__${projection.id}__}" method="get">
-    		<input type="submit" value="delete" />
-   			 </form>
-        </td>
-        <td>
-        	<form th:action="@{/films/edit/__${projection.id}__}" method="get">
-    		<input type="submit" value="edit" />
-   			 </form>
-        </td>
+      	<td th:text="${projection.film.title}">1</td>
+        <td th:text="${projection.film.description}">City</td>
+        <td th:text="${projection.reservation.startDate}">City</td>
+        <td th:text="${projection.reservation.hall.id}">City</td>
       </tr>
-      
     </table>
-    <form th:action="@{/films/add}" method="get">
+    <form th:action="@{/projections/add}" method="get">
     	<input type="submit" value="Add" />
     </form>
   	
