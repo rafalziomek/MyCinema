@@ -41,6 +41,11 @@ public class FilmService implements CinemaService<Film>{
 		return films.get(0).getId();
 	}
 	
+	public long saveExampleFilmAndGetId(String title) {
+		Film film = new Film(title, 20, "someValidAndGoodDescription");
+		add(film);
+		return getFilmByTitle(title).getId();
+	}
 	
 	public void clear() {
 		filmRepository.deleteAll();

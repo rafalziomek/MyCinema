@@ -1,7 +1,6 @@
-package pl.cinema.filmTests;
+package pl.cinema;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -14,27 +13,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import pl.cinema.ControllerTest;
-import pl.cinema.initializers.FilmInitializer;
-import pl.cinema.services.FilmService;
-import pl.cinema.services.ProjectionService;
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@ContextConfiguration
+@WebAppConfiguration
+public abstract class ControllerTest {
 
-
-public abstract class FilmControllerTest extends ControllerTest  {
-	
-
-	@Autowired
-	protected FilmService filmService;
+	protected MockMvc mockMvc;
 	
 	@Autowired
-	protected ProjectionService projectionService;
-	
-	@Autowired
-	private FilmInitializer filmInitializer;
+	private WebApplicationContext context;
 	
 	@Before
-	public void filminitializer() {
-		filmInitializer.initialize();
+	public void initialize() {
+		mockMvc = MockMvcBuilders
+				.webAppContextSetup(context)
+				.apply(springSecurity()) 
+				.build();
 	}
-	
 }

@@ -1,5 +1,6 @@
 package pl.cinema;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -27,5 +28,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public Java8TimeDialect java8TimeDialect() {
         return new Java8TimeDialect();
     }
-
+    
+    
 }

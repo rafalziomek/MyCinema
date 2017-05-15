@@ -1,15 +1,14 @@
 package pl.cinema.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 @Entity
 @Table(name="film")
 public class Film {
@@ -36,6 +35,13 @@ public class Film {
 	
 	public Film(String title) {
 		this.title = title;
+	}
+
+	public Film(String title, int duration, String description) {
+		super();
+		this.title = title;
+		this.duration = duration;
+		this.description = description;
 	}
 
 	public long getId() {

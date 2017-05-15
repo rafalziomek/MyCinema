@@ -34,6 +34,10 @@ public class ProjectionService implements CinemaService<Projection>{
 	public void clear() {
 		projectionRepository.deleteAll();
 	}
+	
+	public void delete(Projection projection) {
+		projectionRepository.delete(projection);
+	}
 
 	@Override
 	public String getModelName() {

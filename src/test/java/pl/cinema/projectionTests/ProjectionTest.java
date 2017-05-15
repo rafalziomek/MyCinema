@@ -1,20 +1,23 @@
 package pl.cinema.projectionTests;
 
 import static org.junit.Assert.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
+import org.springframework.security.test.context.support.WithMockUser;
 
+import pl.cinema.ControllerTest;
 import pl.cinema.initializers.FilmInitializer;
 import pl.cinema.initializers.ProjectionInitializer;
 import pl.cinema.model.Film;
@@ -23,12 +26,11 @@ import pl.cinema.model.Projection;
 import pl.cinema.model.Reservation;
 import pl.cinema.model.validators.ReservationValidator;
 import pl.cinema.services.FilmService;
+import pl.cinema.services.HallService;
 import pl.cinema.services.ProjectionService;
 import pl.cinema.services.ReservationService;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class ProjectionTest {
+public class ProjectionTest extends ControllerTest {
 	
 	@Autowired
 	private ProjectionInitializer projectionInitializer;
@@ -44,44 +46,72 @@ public class ProjectionTest {
 	
 	@Autowired
 	private ReservationValidator reservationValidator;
+	
+	@Autowired
+	private FilmService filmService;
+	
+	@Autowired 
+	private HallService hallService;
+	
+	@Autowired
+	private ProjectionService projectionService;
+	
+	@Autowired
+	private DateTimeFormatter formatter;
+	
 	@Before
-	public void initialize() {
+	public void repositoryInitialize() {
 		films = filmInitializer.initialize();
 		projections = projectionInitializer.initialize();
-		
-	}
-
-	
-	@Test
-	public void testRepository() {
-		Reservation bookedReservation = reservationService.getAll().get(0);
-		Hall bookedHall = bookedReservation.getHall();
-		// Projection initializer initiate reservations when above time reservation will be booked
-		LocalDateTime timeToCheck = bookedReservation.getStartDate().plusSeconds(50);
-		Reservation reservationToCheck = new Reservation(bookedHall, timeToCheck, 20);
-		
-		List<Reservation> bookedReservationsOnTimeToCheck 
-			= reservationService.getBookedReservations(reservationToCheck);
-		
-		assertTrue(bookedReservationsOnTimeToCheck.contains(bookedReservation));
 	}
 	
-	
-	@Test
-	public void testDateValidationReservation() {
-		Reservation firstReservation = reservationService.getAll().get(0);
-		Hall bookedHall = firstReservation.getHall();
-		LocalDateTime wrongTime = firstReservation.getStartDate().plusSeconds(50);
-		Reservation reservation = new Reservation(bookedHall, wrongTime, 5);
-		
-		Errors result = new BindException(reservation, "reservation");
-		
-		reservationValidator.validate(reservation, result);
-		
-		assertTrue(result.getErrorCount() == 1);
-		
-		ObjectError objErr = result.getAllErrors().get(0);
-		assertEquals(objErr.getDefaultMessage(), "On this date hall is booked");
+	@Test 
+	public void testAddProjectionUnauthorized() throws Exception {
+		String title = "titleAddProjectionUnauthorized";
+		long filmId = filmService.saveExampleFilmAndGetId(title);
+		Hall hall = new Hall();
+		hallService.addHall(hall);
+		List<Hall> halls = hallService.getAll();
+		long hallId = halls.get(halls.size() - 1).getId();
+		mockMvc
+			.perform(post("/projections/add")
+			.with(csrf())
+			.param("film", Long.toString(filmId))
+			.param("hall", Long.toString(hallId))
+			.param("startDate", LocalDateTime.now().toString()))
+			.andExpect(unauthenticated());
+		filmService.deleteFilmById(filmId);
 	}
+	
+	@Test 
+	@WithMockUser
+	public void testAddProjection() throws Exception {
+		String title = "titleAddProjectionMockUser";
+		
+		long filmId = filmService.saveExampleFilmAndGetId(title);
+		long hallId = hallService.addExampleHallAndGetId();
+		
+		String date = LocalDateTime.now().format(formatter);
+		LocalDateTime time = LocalDateTime.parse(date, formatter);
+		
+		mockMvc
+			.perform(post("/projections/add")
+			.with(csrf())
+			.param("film", Long.toString(filmId))
+			.param("reservation.hall", Long.toString(hallId))
+			.param("reservation.startDate", date))
+			.andDo(print())
+			.andExpect(status().is3xxRedirection());
+		
+		Projection projection = projectionService.getAllProjectionsByFilmId(filmId).get(0);
+		
+		assertEquals(projection.getFilm(), filmService.getFilmById(filmId));
+		assertEquals(projection.getReservation().getHall(), hallService.getHallById(hallId));
+		assertEquals(projection.getReservation().getStartDate(), time);
+		
+		projectionService.delete(projection);
+		filmService.deleteFilmById(filmId);
+	}
+	
 	
 }

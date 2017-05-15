@@ -3,6 +3,8 @@ package pl.cinema;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,12 +26,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private String[] allRoles = {"ADMIN","MANAGER","USER"};
 	private String[] adminManagerRoles = {"ADMIN","MANAGER"};
+	private String[] filmPaths = {"/films/add", "/films/delete/**", "/films/edit/**"};
+	private String[] projectionPaths = {"/projections/add"};
 	
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/films/add", "/films/delete/**", "/films/edit/**")
+                .antMatchers(filmPaths)
+                .hasAnyRole(allRoles)
+                .antMatchers(projectionPaths)
                 .hasAnyRole(allRoles)
                 .antMatchers("/usermanager")
                 .hasAnyRole(adminManagerRoles)
@@ -54,5 +60,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		return encoder;
 	}
-    
 }

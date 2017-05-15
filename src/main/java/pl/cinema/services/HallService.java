@@ -20,5 +20,15 @@ public class HallService {
 	public void addHall(Hall hall) {
 		hallRepository.save(hall);
 	}
+	
+	public Hall getHallById(long id) {
+		return hallRepository.findById(id);
+	}
+	public long addExampleHallAndGetId() {
+		Hall hall = new Hall();
+		addHall(hall);
+		List<Hall> halls = getAll();
+		return halls.get(halls.size() - 1).getId();
+	}
 }
 
